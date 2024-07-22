@@ -18,3 +18,19 @@ class Config:
             else:
                 self.rsa_key = serialization.load_pem_private_key(
                         rsa_data.encode('ascii'), None, default_backend())
+                
+    def Sign(self, data):
+        """Signs given data using a private key.
+
+        Parameters
+        ----------
+        data : TODO
+            TODO
+
+        Returns
+        -------
+        TODO
+            The signed ``data``
+
+        """
+        return self.rsa_key.sign(data, padding.PKCS1v15(), utils.Prehashed(hashes.SHA1()))
