@@ -1,5 +1,5 @@
 import cryptography.hazmat.primitives.asymmetric import rsa
-
+import socket
 
 class Config:
     def __init__(self, rsa_key_path):
@@ -34,3 +34,17 @@ class Config:
 
         """
         return self.rsa_key.sign(data, padding.PKCS1v15(), utils.Prehashed(hashes.SHA1()))
+    
+    def store_paste(self, paste_data, config):
+        host = config['outputs']['syslog_output']['host']
+        port = config['outputs']['syslog_output']['port']
+
+        syslog_line = '"{0}" "{1}" "{2}" "{3}" "{4}"'.format(paste_data['@timestamp'],
+                                                paste_data['pasteid'],
+                                                paste_data['YaraRule'],
+                                                paste_data['scrape_url'],
+                                                paste_data['pastesite'])
+        syslog = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        syslog.connect((host, port))
+        syslog.send(syslog_line.encode('utf-8'))
+        syslog.close()

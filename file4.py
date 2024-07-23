@@ -1,5 +1,6 @@
 import hashlib
 from Crypto.Cipher import AES
+import yaml
 
 def get_CSEC_response(self, NSC_EPAC_cookie, date, host, EPAcrypt64):
         cookie=NSC_EPAC_cookie[:32]
@@ -25,3 +26,12 @@ def get_CSEC_response(self, NSC_EPAC_cookie, date, host, EPAcrypt64):
         ## Encryption
         encrypted_CSEC_response=self.encryptJython(CSEC_response,key,hexcookie)
         return self._helpers.bytesToString(encrypted_CSEC_response)
+
+def update(self, data):
+        """
+        Updates the metadata with new stuff
+        """
+        if isinstance(data, str):
+            super(Metadata, self).update(yaml.load(data))
+        else:
+            super(Metadata, self).update(data)
